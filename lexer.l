@@ -1,74 +1,78 @@
 %{
-#include <stdio.h>
+#include <string>
+#include "ast.h"
 #include "parser.tab.h"
 
+extern "C" {
+    int yylex(void);
+}
 %}
 
 %option noyywrap
+%option never-interactive
+%option yylineno
 
 %%
 
-"repita"                { return REPITA; }
-"verdadeiro"            { return VERDADEIRO; }
-"falso"                 { return FALSO; }
-"como"                  { return COMO; }
-"saida"                 { return SAIDA; }
-"entrada"               { return ENTRADA; }
+[ \t\n]+        { /* ignora espaços em branco */ }
+"//".*          { /* ignora comentários */ }
 
-"ligar"                { return LIGAR; }
-"desligar"             { return DESLIGAR; }
-"ler_digital"          { return LER_DIGITAL; }
-"ler_analogico"        { return LER_ANALOGICO; }
-"pwm"                  { return PWM; }
-"com"                  { return COM; }
-"frequencia"           { return FREQUENCIA; }
-"resolucao"            { return RESOLUCAO; }
-"ajustar_pwm"          { return AJUSTAR_PWM; }
-"conectar_wifi"        { return CONECTAR_WIFI; }
-"senha"                { return SENHA; }
-"enviar_http"          { return ENVIAR_HTTP; }
-"dados"                { return DADOS; }
-"configurar_serial"    { return CONFIGURAR_SERIAL; }
-"escrever_serial"      { return ESCREVER_SERIAL; }
-"ler_serial"           { return LER_SERIAL; }
-"esperar"              { return ESPERAR; }
+"var"           { return VAR; }
+"config"        { return CONFIG; }
+"fim"           { return FIM; }
+"repita"        { return REPITA; }
+"se"            { return SE; }
+"senao"         { return SENAO; }
+"entao"         { return ENTAO; }
+"enquanto"      { return ENQUANTO; }
 
-"configurar"           { return CONFIGURAR; }
-"config"               { return CONFIG; }
-"var"                  { return VAR; }
-"se"                   { return SE; }
-"entao"                { return ENTAO; }
-"senao"                { return SENAO; }
-"enquanto"             { return ENQUANTO; }
+"configurarSerial" { return CONFIGURAR_SERIAL; }
+"escreverSerial"   { return ESCREVER_SERIAL; }
+"lerSerial"        { return LER_SERIAL; }
+"esperar"          { return ESPERAR; }
 
-"inteiro"              { return INTEIRO; }
-"booleano"             { return BOOLEANO; }
-"texto"                { return TEXTO; }
+"configurarPWM"    { return CONFIG_PWM; }
+"ajustarPWM"       { return AJUSTAR_PWM; }
+"com"              { return COM; }
+"frequencia"       { return FREQUENCIA; }
+"resolucao"        { return RESOLUCAO; }
+"valor"            { return VALOR; }
 
-"="                    { return ATRIBUICAO; }
-"+"                    { return SOMA; }
-"-"                    { return SUBTRACAO; }
-"*"                    { return MULTIPLICACAO; }
-"/"                    { return DIVISAO; }
+"configurar"       { return CONFIGURAR; }
+"como"             { return COMO; }
+"entrada"          { return ENTRADA; }
+"saida"            { return SAIDA; }
+"ligar"            { return LIGAR; }
+"desligar"         { return DESLIGAR; }
+"lerDigital"       { return LER_DIGITAL; }
+"lerAnalogico"     { return LER_ANALOGICO; }
 
-"=="                   { return IGUAL; }
-"!="                   { return DIFERENTE; }
-"<"                    { return MENOR; }
-">"                    { return MAIOR; }
-"<="                   { return MENOR_OU_IGUAL; }
-">="                   { return MAIOR_OU_IGUAL; }
+"conectarWifi"     { return CONECTAR_WIFI; }
+"enviarHttp"       { return ENVIAR_HTTP; }
 
-"("                    { return '('; }
-")"                    { return ')'; }
-";"                    { return FIM; }
+"inteiro"          { return TIPO_INT; }
+"texto"            { return TIPO_STRING; }
+"booleano"         { return TIPO_BOOL; }
 
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.str = strdup(yytext); return IDENTIFICADOR; }
-[0-9]+                 { yylval.num = atoi(yytext); return INTEIRO_LITERAL; }
-\"[^\"]*\"             { yylval.str = strdup(yytext + 1); yylval.str[strlen(yylval.str) - 1] = '\0'; return TEXTO_LITERAL; }
+"=="               { return EQ; }
+"!="               { return NEQ; }
+"<="               { return LEQ; }
+">="               { return GEQ; }
 
-[ \t\n]+               { /* Ignorar espaços e quebras de linha */ }
+"wifi"            { return WIFI; }
+"pin"             { return PIN; }
 
-.                      { fprintf(stderr, "Caractere inválido: %s\n", yytext); }
+"high"            { return HIGH; }
+"low"             { return LOW; }
+"input"           { return INPUT; }
+"output"          { return OUTPUT; }
+
+[0-9]+          { yylval.str = strdup(yytext); return NUMERO; }
+\"[^\"]*\"      { yylval.str = strdup(yytext); return STRING; }
+[a-zA-Z][a-zA-Z0-9_]* { yylval.str = strdup(yytext); return ID; }
+
+[=><(){};:,+\-*/] { return yytext[0]; }
+
+.               { /* ignora caracteres não reconhecidos */ }
 
 %%
-
