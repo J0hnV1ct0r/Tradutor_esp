@@ -1,0 +1,61 @@
+incluir WiFi
+incluir Arduino
+
+// pin setup
+var booleano: nivel_alto = true
+const var inteiro: pinoled = 2
+const var inteiro: ledPin = 13
+const var inteiro: botao = 14
+
+config
+  configurarSerial 9600
+  esperar 500
+  var inteiro: pino = 2
+  var booleano: nivel_alto = true
+  configurar ledPin saida
+  configurar botao entrada
+  ligar ledPin
+  desligar ledPin
+  estadoBotao = lerDigital botao
+  mudar ledPin estadoBotao
+
+  ledPin = ledPin + 5
+fim
+
+repita
+  // loop start
+
+  var inteiro: teste
+  var booleano: alto
+  var texto: palavra
+
+  esperar 500
+  alto = nivel_alto
+  se alto == nivel_alto entao
+    esperar 5
+    esperar 5
+  fim
+
+  se alto > 5 entao
+    esperar 5
+  senao
+    esperar 10
+  fim
+
+  var texto: nome = lerSerial
+  escreverSerial "Botao pressionado"
+  escreverSerial nome
+
+// parte 2
+  escreverAnalogico ledPin 10
+  escreverAnalogico ledPin pino
+  var inteiro: estado = lerAnalogico pino
+  estado = lerAnalogico pino
+  var booleano: estadoBotao2 = lerDigital botao
+
+
+  // while
+  enquanto pino > 1
+    esperar 1
+  fim
+fim
